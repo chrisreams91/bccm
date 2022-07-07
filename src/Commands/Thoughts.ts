@@ -5,14 +5,22 @@ export const thoughtsCommandName = "thoughts";
 
 export const thoughtsCommand = new SlashCommandBuilder()
   .setName(thoughtsCommandName)
-  .setDescription("thohguts?");
+  .setDescription("thohguts?")
+  .addStringOption(option => 
+    option.setName('input')
+      .setDescription('String to scramble')
+      .setRequired(false)
+  );
 
 export const thoughtsCommandHandler = async (
   interaction: CommandInteraction
 ) => {
-  const str = scramble("thoughts");
+  let str = interaction.options.getString('input')
+  if (!str) {
+    str = 'thoughts'
+  }
   
-  await interaction.reply(str);
+  await interaction.reply(scramble(str));
 };
 
 const scramble = (string: String) => {
@@ -30,5 +38,15 @@ const scramble = (string: String) => {
       }
     }
   }
+  const repeat_char = [] as String[];
+  scrambled.forEach(char => {
+    if (Math.random() > .9) {
+      repeat_char.push(char)
+    }
+  });
+  repeat_char.forEach(char => {
+    const ran_idx = Math.random() * scrambled.length;
+    scrambled.splice(ran_idx, 0, char as string)
+  });
   return scrambled.join("") + "?";
 }
