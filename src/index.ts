@@ -1,31 +1,26 @@
-import { Client, Intents } from "discord.js";
-import { token } from "../config.json";
-import { registerSlashCommands } from "./SlashCommands/deploy-commands";
-import { registerListeners } from "./Listeners";
-const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_PRESENCES,
-  ],
-});
+import { Client, Intents } from 'discord.js';
+import { token } from '../config.json';
+import { registerCommands } from './Commands';
+import { registerListeners } from './Listeners';
 
-client.once("ready", () => {
-  console.log("Ready!");
-  registerSlashCommands();
-  registerListeners(client);
-});
+const main = async () => {
+  const client = new Client({
+    intents: [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_MEMBERS,
+      Intents.FLAGS.GUILD_PRESENCES,
+    ],
+  });
 
-client.on("interactionCreate", async (interaction) => {
-  console.log(interaction);
-  if (!interaction.isCommand()) return;
+  client.once('ready', async () => {
+    await registerCommands(client);
+    registerListeners(client);
 
-  const { commandName } = interaction;
+    console.log('App is ready!');
+  });
 
-  if (commandName === "developers") {
-    await interaction.reply("Ben Colin Chris Miles1");
-  }
-});
+  client.login(token);
+};
 
-client.login(token);
+main();
