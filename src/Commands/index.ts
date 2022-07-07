@@ -7,10 +7,16 @@ import {
   developersCommandName,
   developersCommandHandler,
 } from './Developers';
+import {
+  thoughtsCommand,
+  thoughtsCommandHandler,
+  thoughtsCommandName
+} from './Thoughts'
+
 
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
-  const commands = [developersCommand].map((command) => command.toJSON());
+  const commands = [developersCommand, thoughtsCommand].map((command) => command.toJSON());
 
   await rest
     .put(Routes.applicationGuildCommands(clientId, guildId), {
@@ -25,6 +31,9 @@ export const registerCommands = async (client: Client) => {
     switch (commandName) {
       case developersCommandName: {
         await developersCommandHandler(interaction);
+      }
+      case thoughtsCommandName: {
+        await thoughtsCommandHandler(interaction);
       }
     }
   });
