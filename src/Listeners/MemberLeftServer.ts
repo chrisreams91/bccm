@@ -4,13 +4,13 @@ import {
   Message,
   PartialGuildMember,
   TextChannel,
-} from "discord.js";
-import { MILES, GENERAL_CHANNEL, MINUTE } from "../Constants";
+} from 'discord.js';
+import { MILES, GENERAL_CHANNEL, MINUTE } from '../Util/Constants';
 
-export const memberLeftServerEvent = "guildMemberRemove";
+export const memberLeftServerEvent = 'guildMemberRemove';
 
 export const handleMemberLeft = async (
-  guildMember: GuildMember | PartialGuildMember
+  guildMember: GuildMember | PartialGuildMember,
 ) => {
   const { user } = guildMember;
 
@@ -28,7 +28,7 @@ export const handleMemberLeft = async (
         const recent = recentMessages(messages);
 
         const fromMiles = recent.filter(
-          (message) => message.author.id === MILES
+          (message) => message.author.id === MILES,
         );
 
         if (fromMiles.size > 0) {
@@ -39,7 +39,7 @@ export const handleMemberLeft = async (
 
     if (stealthExit) {
       await general.send(
-        `Looks like miles made another sneaky exit better go check in on him.`
+        `Looks like miles made another sneaky exit better go check in on him.`,
       );
     } else {
       await general.send(`${user.username} has left the server.`);
@@ -52,6 +52,6 @@ const recentMessages = (messages: Collection<string, Message<boolean>>) => {
   const lastThirtyMinutes = currentTime - MINUTE * 30;
 
   return messages.filter(
-    (message) => message.createdTimestamp > lastThirtyMinutes
+    (message) => message.createdTimestamp > lastThirtyMinutes,
   );
 };
