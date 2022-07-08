@@ -1,24 +1,41 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { clientId, guildId, token } from '../../config.json';
-import { Client } from 'discord.js';
-import {
-  developersCommand,
-  developersCommandName,
-  developersCommandHandler,
-} from './Developers';
-import {
-  thoughtsCommand,
-  thoughtsCommandHandler,
-  thoughtsCommandName,
-} from './Thoughts';
-import { lokiCommand, lokiCommandHandler, lokiCommandName } from './Loki';
+import { Client, CommandInteraction } from 'discord.js';
+import { developersCommandHandler } from './Developers';
+import { thoughtsCommandHandler } from './Thoughts';
+import { lokiCommandHandler } from './Loki';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { COMMAND_NAMES } from '../Util/Constants';
+
+const commandMap: {
+  [key: string]: {
+    handler: (interaction: CommandInteraction) => Promise<void>;
+    description: string;
+  };
+} = {
+  [COMMAND_NAMES.THOUGHTS]: {
+    handler: thoughtsCommandHandler,
+    description: 'thohguts?',
+  },
+  [COMMAND_NAMES.DEVELOPERS]: {
+    handler: developersCommandHandler,
+    description: 'lists the developers',
+  },
+  [COMMAND_NAMES.LOKI]: {
+    handler: lokiCommandHandler,
+    description: 'Displays a lovely picture of an even more lovely cat',
+  },
+};
 
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
-  const commands = [developersCommand, thoughtsCommand, lokiCommand].map(
-    (command) => command.toJSON(),
-  );
+  const builtCommands = Object.keys(commandMap).map((key) => {
+    return new SlashCommandBuilder()
+      .setName(key)
+      .setDescription(commandMap[key].description);
+  });
+  const commands = builtCommands.map((command) => command.toJSON());
 
   await rest
     .put(Routes.applicationGuildCommands(clientId, guildId), {
@@ -30,17 +47,7 @@ export const registerCommands = async (client: Client) => {
     if (!interaction.isCommand()) return;
     const { commandName } = interaction;
 
-    switch (commandName) {
-      case developersCommandName: {
-        await developersCommandHandler(interaction);
-      }
-      case thoughtsCommandName: {
-        await thoughtsCommandHandler(interaction);
-      }
-      case lokiCommandName: {
-        await lokiCommandHandler(interaction);
-      }
-    }
+    await commandMap[commandName].handler(interaction);
   });
 
   console.log('Successfully registered application commands.');
