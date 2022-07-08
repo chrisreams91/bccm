@@ -15,8 +15,6 @@ export const COMMAND_NAMES = {
     LOKI: 'loki'
 } as const;
 
-COMMAND_NAMES
-
 export type COMMAND_NAME_VALUES = Values<typeof COMMAND_NAMES>
 
 type Values<T> = T[keyof T];
