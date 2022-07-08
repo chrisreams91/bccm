@@ -10,13 +10,15 @@ import {
 import {
   thoughtsCommand,
   thoughtsCommandHandler,
-  thoughtsCommandName
-} from './Thoughts'
-
+  thoughtsCommandName,
+} from './Thoughts';
+import { lokiCommand, lokiCommandHandler, lokiCommandName } from './Loki';
 
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
-  const commands = [developersCommand, thoughtsCommand].map((command) => command.toJSON());
+  const commands = [developersCommand, thoughtsCommand, lokiCommand].map(
+    (command) => command.toJSON(),
+  );
 
   await rest
     .put(Routes.applicationGuildCommands(clientId, guildId), {
@@ -34,6 +36,9 @@ export const registerCommands = async (client: Client) => {
       }
       case thoughtsCommandName: {
         await thoughtsCommandHandler(interaction);
+      }
+      case lokiCommandName: {
+        await lokiCommandHandler(interaction);
       }
     }
   });
