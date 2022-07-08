@@ -8,3 +8,14 @@ export const BOT_TESTING = "994389333509415022";
 
 // random
 export const MINUTE = 60000;
+
+export const COMMAND_NAMES = {
+    THOUGHTS: 'thoughts',
+    DEVELOPERS: 'developers'
+} as const;
+
+COMMAND_NAMES
+
+export type COMMAND_NAME_VALUES = Values<typeof COMMAND_NAMES>
+
+type Values<T> = T[keyof T];
