@@ -1,6 +1,5 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { clientId, guildId, token } from '../../config.json';
 import { Client, CommandInteraction } from 'discord.js';
 import { developersCommandHandler } from './Developers';
 import { thoughtsCommandHandler } from './Thoughts';
@@ -8,6 +7,10 @@ import { lokiCommandHandler } from './Loki';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { COMMAND_NAMES } from '../Util/Constants';
 import { memberActivityCommandHandler } from './MemberActivity';
+
+import secrets from '../../config.json';
+const { token, guildId, clientId } =
+  process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
 const commandMap: {
   [key: string]: {
@@ -30,7 +33,7 @@ const commandMap: {
   [COMMAND_NAMES.MEMBER_ACTIVITY]: {
     handler: memberActivityCommandHandler,
     description: 'Displays member activity',
-  }
+  },
 };
 
 export const registerCommands = async (client: Client) => {
