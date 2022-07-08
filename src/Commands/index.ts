@@ -2,43 +2,39 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { clientId, guildId, token } from '../../config.json';
 import { Client, CommandInteraction } from 'discord.js';
-import {
-  developersCommandHandler,
-} from './Developers';
-import {
-  thoughtsCommandHandler,
-} from './Thoughts'
-import {
-  lokiCommandHandler,
-} from './Loki'
+import { developersCommandHandler } from './Developers';
+import { thoughtsCommandHandler } from './Thoughts';
+import { lokiCommandHandler } from './Loki';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { COMMAND_NAMES } from '../Util/Constants';
 
-const commandMap: {[key: string]: {
-  handler: (interaction: CommandInteraction) => Promise<void>,
-  description: string
-}} = {
+const commandMap: {
+  [key: string]: {
+    handler: (interaction: CommandInteraction) => Promise<void>;
+    description: string;
+  };
+} = {
   [COMMAND_NAMES.THOUGHTS]: {
     handler: thoughtsCommandHandler,
-    description: "thohguts?"
+    description: 'thohguts?',
   },
   [COMMAND_NAMES.DEVELOPERS]: {
     handler: developersCommandHandler,
-    description: "lists the developers"
+    description: 'lists the developers',
   },
   [COMMAND_NAMES.LOKI]: {
     handler: lokiCommandHandler,
-    description: "Displays a lovely picture of an even more lovely cat"
-  }
-}
+    description: 'Displays a lovely picture of an even more lovely cat',
+  },
+};
 
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
-  const builtCommands = Object.keys(commandMap).map(key => {
+  const builtCommands = Object.keys(commandMap).map((key) => {
     return new SlashCommandBuilder()
-  .setName(key)
-  .setDescription(commandMap[key].description);
-  })
+      .setName(key)
+      .setDescription(commandMap[key].description);
+  });
   const commands = builtCommands.map((command) => command.toJSON());
 
   await rest
