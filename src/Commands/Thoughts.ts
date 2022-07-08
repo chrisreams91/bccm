@@ -1,9 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-
-export const thoughtsCommand = new SlashCommandBuilder()
-  .setName(thoughtsCommandName)
-  .setDescription("thohguts?");
 
 export const thoughtsCommandHandler = async (
   interaction: CommandInteraction
