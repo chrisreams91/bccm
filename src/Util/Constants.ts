@@ -13,4 +13,5 @@ export const COMMAND_NAMES = {
   THOUGHTS: 'thoughts',
   DEVELOPERS: 'developers',
   LOKI: 'loki',
+  MEMBER_ACTIVITY: 'memberactivity'
 } as const;
