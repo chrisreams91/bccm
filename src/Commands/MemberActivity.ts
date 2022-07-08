@@ -16,6 +16,7 @@ export const memberActivityCommandHandler = async (
   const memberData: { [key: string]: number } = {};
 
   for (const channel of channelCache.values()) {
+    // doesnt handle thread comments
     if (channel instanceof TextChannel) {
       const allMessages = await getAllMessagesFromChannel(channel);
 
