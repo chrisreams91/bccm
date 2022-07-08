@@ -8,20 +8,27 @@ import {
 import {
   thoughtsCommandHandler,
 } from './Thoughts'
+import {
+  lokiCommandHandler,
+} from './Loki'
 import { SlashCommandBuilder } from '@discordjs/builders';
-
+import { COMMAND_NAMES } from '../Util/Constants';
 
 const commandMap: {[key: string]: {
   handler: (interaction: CommandInteraction) => Promise<void>,
   description: string
 }} = {
-  'thoughts': {
+  [COMMAND_NAMES.THOUGHTS]: {
     handler: thoughtsCommandHandler,
     description: "thohguts?"
   },
-  'developers': {
+  [COMMAND_NAMES.DEVELOPERS]: {
     handler: developersCommandHandler,
     description: "lists the developers"
+  },
+  [COMMAND_NAMES.LOKI]: {
+    handler: lokiCommandHandler,
+    description: "Displays a lovely picture of an even more lovely cat"
   }
 }
 

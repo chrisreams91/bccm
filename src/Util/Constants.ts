@@ -11,7 +11,8 @@ export const MINUTE = 60000;
 
 export const COMMAND_NAMES = {
     THOUGHTS: 'thoughts',
-    DEVELOPERS: 'developers'
+    DEVELOPERS: 'developers',
+    LOKI: 'loki'
 } as const;
 
 COMMAND_NAMES
