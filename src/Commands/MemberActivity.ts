@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, Message, TextChannel } from 'discord.js';
 import { formatJSONForReply } from '../Util/Helpers';
+import { getAllMessagesForChannel } from '../Database/Messages';
+import { getAllUsers } from '../Database/Users';
 
 export const memberActivityName = 'memberactivity';
 
@@ -15,45 +17,28 @@ export const memberActivityCommandHandler = async (
   const channelCache = interaction.guild!.channels.cache;
   const memberData: { [key: string]: number } = {};
 
+  const userIdToUsernameMap: { [key: string]: string } = {};
+  const users = await getAllUsers();
+  users.forEach((user) => {
+    userIdToUsernameMap[user.id] = user.username;
+  });
+
   for (const channel of channelCache.values()) {
     // doesnt handle thread comments
     if (channel instanceof TextChannel) {
-      const allMessages = await getAllMessagesFromChannel(channel);
+      const messages = await getAllMessagesForChannel(channel.id);
 
-      console.log(`allMessages for ${channel.name} : `, allMessages.length);
-
-      allMessages.forEach((message) => {
-        const { username } = message.author;
-        if (memberData[username]) {
-          memberData[username] += 1;
+      messages.forEach((message) => {
+        const { authorId } = message;
+        const name = userIdToUsernameMap[authorId];
+        if (memberData[name]) {
+          memberData[name] += 1;
         } else {
-          memberData[username] = 1;
+          memberData[name] = 1;
         }
       });
     }
   }
 
   await currentChannel.send(formatJSONForReply(memberData));
-};
-
-const getAllMessagesFromChannel = async (channel: TextChannel) => {
-  const messages: Message[] = [];
-
-  let message = await channel.messages
-    .fetch({ limit: 1 })
-    .then((messagePage) => (messagePage.size === 1 ? messagePage.at(0) : null));
-
-  while (message) {
-    const messageChunk = await channel.messages.fetch({
-      limit: 100,
-      before: message.id,
-    });
-
-    messageChunk.forEach((msg) => messages.push(msg));
-
-    message =
-      0 < messageChunk.size ? messageChunk.at(messageChunk.size - 1) : null;
-  }
-
-  return messages;
 };
