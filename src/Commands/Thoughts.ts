@@ -3,9 +3,10 @@ import { CommandInteraction } from "discord.js";
 export const thoughtsCommandHandler = async (
   interaction: CommandInteraction
 ) => {
-  const str = scramble("thoughts");
+  const str = interaction.options.getString('input') || 'thoughts';
+  const scrambled = scramble(str);
   
-  await interaction.reply(str);
+  await interaction.reply(scrambled);
 };
 
 const scramble = (string: String) => {
