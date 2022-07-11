@@ -15,3 +15,5 @@ export const COMMAND_NAMES = {
   LOKI: 'loki',
   MEMBER_ACTIVITY: 'memberactivity'
 } as const;
+
+export type COMMAND_OPTION_TYPE = 'string';

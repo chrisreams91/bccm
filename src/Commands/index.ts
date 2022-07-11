@@ -5,7 +5,7 @@ import { developersCommandHandler } from './Developers';
 import { thoughtsCommandHandler } from './Thoughts';
 import { lokiCommandHandler } from './Loki';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { COMMAND_NAMES } from '../Util/Constants';
+import { COMMAND_NAMES, COMMAND_OPTION_TYPE } from '../Util/Constants';
 import { memberActivityCommandHandler } from './MemberActivity';
 
 import secrets from '../../config.json';
@@ -16,11 +16,27 @@ const commandMap: {
   [key: string]: {
     handler: (interaction: CommandInteraction) => Promise<void>;
     description: string;
+    options?: [
+      {
+        name: string;
+        description: string;
+        required: boolean;
+        type: COMMAND_OPTION_TYPE;
+      },
+    ];
   };
 } = {
   [COMMAND_NAMES.THOUGHTS]: {
     handler: thoughtsCommandHandler,
     description: 'thohguts?',
+    options: [
+      {
+        name: 'input',
+        description: 'String to scramble',
+        required: false,
+        type: 'string',
+      },
+    ],
   },
   [COMMAND_NAMES.DEVELOPERS]: {
     handler: developersCommandHandler,
@@ -39,9 +55,25 @@ const commandMap: {
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
   const builtCommands = Object.keys(commandMap).map((key) => {
-    return new SlashCommandBuilder()
+    const config = commandMap[key];
+    const command = new SlashCommandBuilder()
       .setName(key)
-      .setDescription(commandMap[key].description);
+      .setDescription(config.description);
+
+    if (config.options && config.options.length) {
+      config.options.forEach((option) => {
+        if (option.type === 'string') {
+          command.addStringOption((stringOption) =>
+            stringOption
+              .setName(option.name)
+              .setDescription(option.description)
+              .setRequired(option.required),
+          );
+        }
+      });
+    }
+
+    return command;
   });
   const commands = builtCommands.map((command) => command.toJSON());
 
