@@ -6,12 +6,11 @@ const {
 } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
 const uri = `mongodb://${user}:${password}@${url}`;
+export const client = new MongoClient(uri);
 
 export let db: Db;
 
 export const initializeDatabase = async () => {
-  const client = new MongoClient(uri);
-
   await client.connect();
   console.log('Successfully connected to database.');
   const database = client.db('database');
