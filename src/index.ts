@@ -2,7 +2,7 @@ import { Client, Intents } from 'discord.js';
 import { registerCommands } from './Commands';
 import { registerListeners } from './Listeners';
 import secrets from '../config.json';
-import { client, initializeDatabase } from './Database/init';
+import AppDataSource from './Database/config';
 
 const { ENV, DB } = process.env;
 const { token } = ENV === 'PROD' ? secrets.prod : secrets.local;
@@ -22,7 +22,7 @@ const main = async () => {
 
     discordClient.once('ready', async () => {
       if (DB) {
-        await initializeDatabase();
+        await AppDataSource.initialize();
       }
       await registerCommands(discordClient);
       registerListeners(discordClient);
@@ -31,7 +31,6 @@ const main = async () => {
     });
   } catch (error) {
     console.log(error);
-    await client.close();
     process.exit(1);
   }
 };

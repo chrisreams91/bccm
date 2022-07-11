@@ -1,14 +1,15 @@
-version: '3.7'
+version: '3.8'
 services:
-  mongodb_container:
-    image: mongo:latest
+  db:
+    image: postgres:14.1-alpine
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: local
-      MONGO_INITDB_ROOT_PASSWORD: test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     ports:
-      - 27017:27017
+      - '5432:5432'
     volumes:
-      - mongodb_data_container:/data/db
-
+      - db:/var/lib/postgresql/data
 volumes:
-  mongodb_data_container:
+  db:
+    driver: local
