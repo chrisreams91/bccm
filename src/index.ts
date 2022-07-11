@@ -1,7 +1,9 @@
 import { Client, Intents } from 'discord.js';
-import { token } from '../config.json';
 import { registerCommands } from './Commands';
 import { registerListeners } from './Listeners';
+import secrets from '../config.json';
+
+const { token } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
 const main = async () => {
   const client = new Client({
