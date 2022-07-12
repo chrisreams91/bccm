@@ -1,16 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, Message, TextChannel } from 'discord.js';
+import { COMMAND_NAMES } from '../Util/Constants';
 import { formatJSONForReply } from '../Util/Helpers';
 
-export const memberActivityName = 'memberactivity';
-
-export const memberActivityCommand = new SlashCommandBuilder()
-  .setName(memberActivityName)
-  .setDescription('lists the developers');
-
-export const memberActivityCommandHandler = async (
-  interaction: CommandInteraction,
-) => {
+export const handler = async (interaction: CommandInteraction) => {
   const currentChannel = interaction.channel as TextChannel;
   const channelCache = interaction.guild!.channels.cache;
   const memberData: { [key: string]: number } = {};
@@ -57,3 +50,10 @@ const getAllMessagesFromChannel = async (channel: TextChannel) => {
 
   return messages;
 };
+
+const command = new SlashCommandBuilder()
+  .setName(COMMAND_NAMES.MEMBER_ACTIVITY)
+  .setDescription('Displays member activity')
+  .toJSON();
+
+export default { handler, command };
