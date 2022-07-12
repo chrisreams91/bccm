@@ -8,9 +8,10 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { COMMAND_NAMES } from '../Util/Constants';
 import { memberActivityCommandHandler } from './MemberActivity';
 
-import secrets from '../../config.json';
-const { token, guildId, clientId } =
-  process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
+const token = process.env.TOKEN!;
+const guildId = process.env.GUILD_ID!;
+const clientId = process.env.CLIENT_ID!;
+console.log(token)
 
 const commandMap: {
   [key: string]: {

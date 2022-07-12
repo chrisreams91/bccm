@@ -1,9 +1,10 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import { Client, Intents } from 'discord.js';
 import { registerCommands } from './Commands';
 import { registerListeners } from './Listeners';
-import secrets from '../config.json';
 
-const { token } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
+const token = process.env.TOKEN!;
 
 const main = async () => {
   const client = new Client({
