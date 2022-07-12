@@ -17,4 +17,4 @@ RUN ["npx", "tsc"]
 RUN [ "mv", "./assets",  "./dist/assets" ]
 
 # CMD ls dist/src
-CMD [ "node", "dist/src/index.js" ]
+CMD [ "node", "dist/index.js" ]

@@ -4,7 +4,6 @@ import { Client, Intents } from 'discord.js';
 import { registerCommands } from './Commands';
 import { registerListeners } from './Listeners';
 
-
 const token = process.env.TOKEN!;
 
 const main = async () => {
