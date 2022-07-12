@@ -6,7 +6,6 @@ import { registerListeners } from './Listeners';
 
 const token = process.env.TOKEN!;
 
-
 const main = async () => {
   const client = new Client({
     intents: [
