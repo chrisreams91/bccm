@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import secrets from '../../config.json';
+import Channel from './Entities/Channel.entity';
+import User from './Entities/User.entity';
+import Message from './Entities/Message.entity';
 
 const { ENV } = process.env;
 const { database } = ENV === 'PROD' ? secrets.prod : secrets.local;
@@ -12,7 +15,7 @@ export const AppDataSource = new DataSource({
   username: database.user,
   password: database.password,
   database: database.db,
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  entities: [Message, User, Channel],
   // logging: true,
   synchronize: true,
 });
