@@ -23,6 +23,7 @@ const main = async () => {
     console.log('App is ready!');
   });
 
+  console.log(token);
   client.login(token);
 };
 
