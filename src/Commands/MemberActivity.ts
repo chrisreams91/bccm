@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, Message, TextChannel } from 'discord.js';
+import { CommandInteraction, TextChannel } from 'discord.js';
 import { formatJSONForReply } from '../Util/Helpers';
-// import { getAllMessagesForChannel } from '../Database/Messages';
-// import { getAllUsers } from '../Database/Users';
+import AppDataSource from '../Database/config';
+import User from '../Database/Entities/User.entity';
 
 export const memberActivityName = 'memberactivity';
 
@@ -14,31 +14,14 @@ export const memberActivityCommandHandler = async (
   interaction: CommandInteraction,
 ) => {
   const currentChannel = interaction.channel as TextChannel;
-  const channelCache = interaction.guild!.channels.cache;
   const memberData: { [key: string]: number } = {};
 
-  // const userIdToUsernameMap: { [key: string]: string } = {};
-  // const users = await getAllUsers();
-  // users.forEach((user) => {
-  //   userIdToUsernameMap[user.id] = user.username;
-  // });
+  const messageRepo = AppDataSource.getRepository(User);
+  const allUsers = await messageRepo.find();
 
-  // for (const channel of channelCache.values()) {
-  //   // doesnt handle thread comments
-  //   if (channel instanceof TextChannel) {
-  //     const messages = await getAllMessagesForChannel(channel.id);
-
-  //     messages.forEach((message) => {
-  //       const { authorId } = message;
-  //       const name = userIdToUsernameMap[authorId];
-  //       if (memberData[name]) {
-  //         memberData[name] += 1;
-  //       } else {
-  //         memberData[name] = 1;
-  //       }
-  //     });
-  //   }
-  // }
+  allUsers.forEach((user) => {
+    memberData[user.username] = user.messages.length;
+  });
 
   await currentChannel.send(formatJSONForReply(memberData));
 };

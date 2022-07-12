@@ -44,7 +44,7 @@ class User {
   })
   accentColor?: string;
 
-  @OneToMany(() => Message, (message) => message.user)
+  @OneToMany(() => Message, (message) => message.user, { eager: true })
   @JoinColumn()
   messages: Message[];
 

@@ -16,8 +16,8 @@ export const AppDataSource = new DataSource({
   password: database.password,
   database: database.db,
   entities: [Message, User, Channel],
-  // logging: true,
   synchronize: true,
+  // logging: true,
 });
 
 export default AppDataSource;
