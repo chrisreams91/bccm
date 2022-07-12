@@ -45,8 +45,10 @@ const main = async () => {
              *  also having type errors hence the ts ignore
              *
              */
+
             //@ts-ignore
             const { messages, ...cleanedChannel } = channel.toJSON();
+
             //@ts-ignore
             await messageRepo.save({
               ...message,

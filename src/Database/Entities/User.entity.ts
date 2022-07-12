@@ -18,8 +18,13 @@ class User {
   @Column()
   public system: boolean;
 
+  @Column({
+    nullable: true,
+  })
+  public avatar?: string;
+
   @Column()
-  public avatar: string;
+  defaultAvatarURL: string;
 
   @Column()
   public discriminator: string;
@@ -42,6 +47,10 @@ class User {
   @OneToMany(() => Message, (message) => message.user)
   @JoinColumn()
   messages: Message[];
+
+  getAvatarURL() {
+    return `https://cdn.discordapp.com/avatars/${this.id}/${this.avatar}`;
+  }
 }
 
 export default User;
