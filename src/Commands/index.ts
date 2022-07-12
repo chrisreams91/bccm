@@ -36,7 +36,7 @@ export const registerCommands = async (client: Client) => {
   client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
     const { commandName } = interaction;
-
+    console.log(`Running command: ${commandName}`);
     await commandMap[commandName].handler(interaction);
   });
 
