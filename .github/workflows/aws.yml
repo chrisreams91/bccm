@@ -45,10 +45,6 @@ env:
                                               # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: bccm-container              # set this to the name of the container in the
                                               # containerDefinitions section of your task definition
-
-permissions:
-  contents: read
-
 jobs:
   deploy:
     name: Deploy
