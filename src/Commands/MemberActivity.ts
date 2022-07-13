@@ -21,7 +21,7 @@ export const handler = async (interaction: CommandInteraction) => {
 
 const command = new SlashCommandBuilder()
   .setName(COMMAND_NAMES.MEMBER_ACTIVITY)
-  .setDescription('Displays a lovely picture of an even more lovely cat')
+  .setDescription('Displays discord member message counts.')
   .toJSON();
 
 export default { handler, command };
