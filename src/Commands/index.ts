@@ -1,12 +1,15 @@
 import { REST } from '@discordjs/rest';
-import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/v9';
+import {
+  RESTPostAPIApplicationCommandsJSONBody,
+  Routes,
+} from 'discord-api-types/v9';
 import { Client, CommandInteraction } from 'discord.js';
 import secrets from '../../config.json';
 import { COMMAND_NAMES } from '../Util/Constants';
 import developers from './Developers';
 import thoughts from './Thoughts';
 import loki from './Loki';
-import memberActivity from './MemberActivity';
+import memberActivity from './MemberActivity/MemberActivity';
 
 const commandMap: {
   [key: string]: {
