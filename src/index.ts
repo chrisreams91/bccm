@@ -23,6 +23,7 @@ const main = async () => {
     discordClient.once('ready', async () => {
       if (DB) {
         await AppDataSource.initialize();
+        console.log('Successfully connected to database.');
       }
       await registerCommands(discordClient);
       registerListeners(discordClient);
