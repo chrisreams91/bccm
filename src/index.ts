@@ -2,27 +2,38 @@ import { Client, Intents } from 'discord.js';
 import { registerCommands } from './Commands';
 import { registerListeners } from './Listeners';
 import secrets from '../config.json';
+import AppDataSource from './Database/config';
 
-const { token } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
+const { ENV, DB } = process.env;
+const { token } = ENV === 'PROD' ? secrets.prod : secrets.local;
 
 const main = async () => {
-  const client = new Client({
-    intents: [
-      Intents.FLAGS.GUILDS,
-      Intents.FLAGS.GUILD_MESSAGES,
-      Intents.FLAGS.GUILD_MEMBERS,
-      Intents.FLAGS.GUILD_PRESENCES,
-    ],
-  });
+  try {
+    const discordClient = new Client({
+      intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_PRESENCES,
+      ],
+    });
 
-  client.once('ready', async () => {
-    await registerCommands(client);
-    registerListeners(client);
+    discordClient.login(token);
 
-    console.log('App is ready!');
-  });
+    discordClient.once('ready', async () => {
+      if (DB) {
+        await AppDataSource.initialize();
+        console.log('Successfully connected to database.');
+      }
+      await registerCommands(discordClient);
+      registerListeners(discordClient);
 
-  client.login(token);
+      console.log('App is ready!');
+    });
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 };
 
 main();

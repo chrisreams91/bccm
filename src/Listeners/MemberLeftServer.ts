@@ -1,7 +1,7 @@
 import {
   Collection,
   GuildMember,
-  Message,
+  Message as DiscordMessage,
   PartialGuildMember,
   TextChannel,
 } from 'discord.js';
@@ -47,7 +47,9 @@ export const handleMemberLeft = async (
   }
 };
 
-const recentMessages = (messages: Collection<string, Message<boolean>>) => {
+const recentMessages = (
+  messages: Collection<string, DiscordMessage<boolean>>,
+) => {
   const currentTime = Date.now();
   const lastThirtyMinutes = currentTime - MINUTE * 30;
 

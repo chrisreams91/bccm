@@ -1,59 +1,27 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, Message, TextChannel } from 'discord.js';
-import { COMMAND_NAMES } from '../Util/Constants';
+import { CommandInteraction, TextChannel } from 'discord.js';
 import { formatJSONForReply } from '../Util/Helpers';
+import { COMMAND_NAMES } from '../Util/Constants';
+import AppDataSource from '../Database/config';
+import User from '../Database/Entities/User.entity';
 
 export const handler = async (interaction: CommandInteraction) => {
   const currentChannel = interaction.channel as TextChannel;
-  const channelCache = interaction.guild!.channels.cache;
   const memberData: { [key: string]: number } = {};
 
-  for (const channel of channelCache.values()) {
-    // doesnt handle thread comments
-    if (channel instanceof TextChannel) {
-      const allMessages = await getAllMessagesFromChannel(channel);
+  const messageRepo = AppDataSource.getRepository(User);
+  const allUsers = await messageRepo.find();
 
-      console.log(`allMessages for ${channel.name} : `, allMessages.length);
-
-      allMessages.forEach((message) => {
-        const { username } = message.author;
-        if (memberData[username]) {
-          memberData[username] += 1;
-        } else {
-          memberData[username] = 1;
-        }
-      });
-    }
-  }
+  allUsers.forEach((user) => {
+    memberData[user.username] = user.messages.length;
+  });
 
   await currentChannel.send(formatJSONForReply(memberData));
 };
 
-const getAllMessagesFromChannel = async (channel: TextChannel) => {
-  const messages: Message[] = [];
-
-  let message = await channel.messages
-    .fetch({ limit: 1 })
-    .then((messagePage) => (messagePage.size === 1 ? messagePage.at(0) : null));
-
-  while (message) {
-    const messageChunk = await channel.messages.fetch({
-      limit: 100,
-      before: message.id,
-    });
-
-    messageChunk.forEach((msg) => messages.push(msg));
-
-    message =
-      0 < messageChunk.size ? messageChunk.at(messageChunk.size - 1) : null;
-  }
-
-  return messages;
-};
-
 const command = new SlashCommandBuilder()
   .setName(COMMAND_NAMES.MEMBER_ACTIVITY)
-  .setDescription('Displays member activity')
+  .setDescription('Displays discord member message counts.')
   .toJSON();
 
 export default { handler, command };
