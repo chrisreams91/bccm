@@ -6,15 +6,15 @@ export interface LineChartData {
   data: { x: string | number; y: string | number }[];
 }
 
-const LineChart = (data: LineChartData[]) => {
+const LineChart = (data: LineChartData[], bottomLegend: string = 'time') => {
   return (
     <Line
-      colors={{ scheme: 'paired' }}
       data={data}
+      colors={{ scheme: 'paired' }}
       width={1200}
-      height={600}
+      height={800}
       pointLabelYOffset={0}
-      enablePoints={false}
+      // enablePoints={false}
       enableArea={true}
       areaOpacity={0.2}
       enableGridX={false}
@@ -22,10 +22,13 @@ const LineChart = (data: LineChartData[]) => {
       axisBottom={{
         tickRotation: 25,
         tickPadding: 10,
+        legend: bottomLegend,
+        legendOffset: 60,
+        legendPosition: 'middle',
       }}
       axisLeft={{
         legend: 'Message Count',
-        legendOffset: -50,
+        legendOffset: -60,
         legendPosition: 'middle',
       }}
       legends={[
@@ -45,6 +48,7 @@ const LineChart = (data: LineChartData[]) => {
         },
       ]}
       animate={false}
+      isInteractive={false}
     />
   );
 };
