@@ -6,21 +6,24 @@ import AppDataSource from '../../Database/config';
 import User from '../../Database/Entities/User.entity';
 import { render } from './Renderer';
 import path from 'path';
+import PieChart from './PieChart';
+import LineChart from './LineChart';
+import { formatPieData, formatLineData } from './DataFormat';
 
 export const handler = async (interaction: CommandInteraction) => {
-  // const currentChannel = interaction.channel as TextChannel;
-  // const memberData: { [key: string]: number } = {};
+  const messageRepo = AppDataSource.getRepository(User);
+  const allUsers = await messageRepo.find();
 
-  // const messageRepo = AppDataSource.getRepository(User);
-  // const allUsers = await messageRepo.find();
+  // const pieData = formatPieData(allUsers);
+  // const pie = PieChart(pieData);
+  // console.log(pieData);
 
-  // allUsers.forEach((user) => {
-  //   memberData[user.username] = user.messages.length;
-  // });
+  // await render(pie);
 
-  // await currentChannel.send(formatJSONForReply(memberData));
+  const lineData = formatLineData(allUsers, 30);
+  const lineChart = LineChart(lineData);
 
-  await render();
+  await render(lineChart);
   await interaction.reply({
     files: [path.join(__dirname, '../../../test.png')],
   });
