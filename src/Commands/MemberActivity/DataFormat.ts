@@ -14,9 +14,13 @@ export const formatLineData = (
   data: User[],
   range: number,
 ): LineChartData[] => {
-  const dateRanges = formatDateRange(range);
+  const incrementSizeTimestamp = (range / 10) * DAY;
+  const dateRanges = formatDateRange(incrementSizeTimestamp);
+  const sortedByMostMessaegs = data.sort(
+    (a, b) => a.messages.length - b.messages.length,
+  );
 
-  const formatted = data.map((user) => {
+  const formatted = sortedByMostMessaegs.map((user) => {
     const messagesWithinRange = user.messages.filter(
       (message) => Number(message.createdTimestamp) > dateRanges[0],
     );
@@ -25,7 +29,10 @@ export const formatLineData = (
     }
 
     const data = dateRanges.map((date, index) => {
-      const readableDate = timestampToMonthDayString(date);
+      const readableDate = timestampToMonthDayRangeString(
+        date,
+        incrementSizeTimestamp,
+      );
 
       if (index === 9) {
         const messages = messagesWithinRange.filter(
@@ -48,13 +55,15 @@ export const formatLineData = (
   return formatted.filter(Boolean);
 };
 
-const timestampToMonthDayString = (timestamp: number) => {
+const timestampToMonthDayRangeString = (
+  timestamp: number,
+  incrementSizeTimestamp: number,
+) => {
   const minDateClass = new Date(timestamp);
   const minDay = minDateClass.getDate();
   const minMonth = minDateClass.getMonth();
 
-  const increment = DAY * 3;
-  const maxDateClass = new Date(timestamp + increment);
+  const maxDateClass = new Date(timestamp + incrementSizeTimestamp);
   const maxDay = maxDateClass.getDate();
   const maxMonth = maxDateClass.getMonth();
 
@@ -62,10 +71,7 @@ const timestampToMonthDayString = (timestamp: number) => {
 };
 
 // only does 10 points
-// values of date is between increment chunk and data point date
-export const formatDateRange = (numberOfDays: number) => {
-  const incrementSize = (numberOfDays / 10) * DAY;
-
+export const formatDateRange = (incrementSize: number) => {
   let chunk = Date.now() - incrementSize;
 
   const dateRanges = Array.from({ length: 10 }, (_, index) => {

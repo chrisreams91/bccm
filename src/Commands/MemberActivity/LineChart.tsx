@@ -3,12 +3,13 @@ import { Line } from '@nivo/line';
 
 export interface LineChartData {
   id: string;
-  data: { x: any; y: any }[];
+  data: { x: string | number; y: string | number }[];
 }
 
 const LineChart = (data: LineChartData[]) => {
   return (
     <Line
+      colors={{ scheme: 'paired' }}
       data={data}
       width={1200}
       height={600}
@@ -17,16 +18,19 @@ const LineChart = (data: LineChartData[]) => {
       enableArea={true}
       areaOpacity={0.2}
       enableGridX={false}
-      // pointBorderWidth={3}
-      // yScale={{
-      //   type: 'linear',
-      //   stacked: true,
-      // }}
       margin={{ top: 100, right: 150, bottom: 100, left: 100 }}
-      enableSlices={'x'}
+      axisBottom={{
+        tickRotation: 25,
+        tickPadding: 10,
+      }}
+      axisLeft={{
+        legend: 'Message Count',
+        legendOffset: -50,
+        legendPosition: 'middle',
+      }}
       legends={[
         {
-          anchor: 'bottom-right',
+          anchor: 'right',
           direction: 'column',
           justify: false,
           translateX: 100,
@@ -38,9 +42,9 @@ const LineChart = (data: LineChartData[]) => {
           itemOpacity: 0.75,
           symbolSize: 12,
           symbolShape: 'circle',
-          // symbolBorderColor: 'rgba(0, 0, 0, .5)',
         },
       ]}
+      animate={false}
     />
   );
 };

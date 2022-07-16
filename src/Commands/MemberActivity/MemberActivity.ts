@@ -20,7 +20,7 @@ export const handler = async (interaction: CommandInteraction) => {
 
   // await render(pie);
 
-  const lineData = formatLineData(allUsers, 30);
+  const lineData = formatLineData(allUsers, 90);
   const lineChart = LineChart(lineData);
 
   await render(lineChart);

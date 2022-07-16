@@ -15,12 +15,13 @@ const PieChart = (data: PieData[]) => (
     width={800}
     innerRadius={0.5}
     padAngle={1}
-    // sortByValue={true}
+    sortByValue={true}
     arcLabelsSkipAngle={11}
     arcLinkLabelsSkipAngle={0}
     arcLinkLabelsColor={{
       from: 'color',
     }}
+    margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
   />
 );
 
