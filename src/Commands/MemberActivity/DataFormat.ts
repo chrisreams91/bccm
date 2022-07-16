@@ -20,31 +20,49 @@ export const formatLineData = (
     const messagesWithinRange = user.messages.filter(
       (message) => Number(message.createdTimestamp) > dateRanges[0],
     );
+    if (messagesWithinRange.length === 0) {
+      return;
+    }
 
     const data = dateRanges.map((date, index) => {
+      const readableDate = timestampToMonthDayString(date);
+
       if (index === 9) {
         const messages = messagesWithinRange.filter(
           (message) => Number(message.createdTimestamp) > dateRanges[index],
         );
-        return { x: index, y: messages.length };
+        return { x: readableDate, y: messages.length };
       } else {
         const messages = messagesWithinRange.filter(
           (message) =>
             Number(message.createdTimestamp) > dateRanges[index] &&
             Number(message.createdTimestamp) < dateRanges[index + 1],
         );
-        return { x: index, y: messages.length };
+        return { x: readableDate, y: messages.length };
       }
     });
 
     return { id: user.username, data };
   });
 
-  return formatted;
+  return formatted.filter(Boolean);
+};
+
+const timestampToMonthDayString = (timestamp: number) => {
+  const minDateClass = new Date(timestamp);
+  const minDay = minDateClass.getDate();
+  const minMonth = minDateClass.getMonth();
+
+  const increment = DAY * 3;
+  const maxDateClass = new Date(timestamp + increment);
+  const maxDay = maxDateClass.getDate();
+  const maxMonth = maxDateClass.getMonth();
+
+  return `${minMonth}/${minDay} - ${maxMonth}/${maxDay}`;
 };
 
 // only does 10 points
-// each data point value of all messages between increment chunk and data point date
+// values of date is between increment chunk and data point date
 export const formatDateRange = (numberOfDays: number) => {
   const incrementSize = (numberOfDays / 10) * DAY;
 
