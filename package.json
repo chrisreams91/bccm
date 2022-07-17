@@ -7,8 +7,7 @@
     "start": "ENV=PROD nodemon src/index.ts",
     "local": "ENV=LOCAL nodemon src/index.ts",
     "local:db": "ENV=LOCAL DB=TRUE nodemon src/index.ts",
-    "populateDb": "ENV=LOCAL ts-node src/Database/PopulateDatabase.ts",
-    "test": "ts-node src/Commands/MemberActivity/Renderer.ts"
+    "populateDb": "ENV=LOCAL ts-node src/Database/PopulateDatabase.ts"
   },
   "keywords": [],
   "author": "",

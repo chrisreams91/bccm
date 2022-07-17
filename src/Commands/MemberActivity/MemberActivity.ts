@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, MessageAttachment } from 'discord.js';
 import { COMMAND_NAMES } from '../../Util/Constants';
 import AppDataSource from '../../Database/config';
 import User from '../../Database/Entities/User.entity';
-import { render } from './Renderer';
+import { jsxToPNGBuffer } from './Renderer';
 import path from 'path';
 import PieChart from './PieChart';
 import LineChart from './LineChart';
@@ -23,21 +23,22 @@ export const handler = async (interaction: CommandInteraction) => {
   const messageRepo = AppDataSource.getRepository(User);
   const allUsers = await messageRepo.find();
 
+  let attachment: MessageAttachment;
   if (range === 1) {
     const pieData = formatPieData(allUsers);
     const pie = PieChart(pieData);
 
-    await render(pie);
+    const buf = await jsxToPNGBuffer(pie);
+    attachment = new MessageAttachment(buf);
   } else {
     const lineData = formatLineData(allUsers, range);
     const lineChart = LineChart(lineData, dayToReadableMap[range]);
 
-    await render(lineChart);
+    const buf = await jsxToPNGBuffer(lineChart);
+    attachment = new MessageAttachment(buf);
   }
 
-  await interaction.reply({
-    files: [path.join(__dirname, '../../../test.png')],
-  });
+  await interaction.reply({ files: [attachment] });
 };
 
 const command = new SlashCommandBuilder()
