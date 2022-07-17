@@ -25,16 +25,18 @@ const commandMap: {
 
 const commands = Object.values(commandMap).map((mapping) => mapping.command);
 
-const { token, guildId, clientId } =
+const { token, clientId } =
   process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
 export const registerCommands = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(token);
-  await rest
-    .put(Routes.applicationGuildCommands(clientId, guildId), {
-      body: commands,
-    })
-    .catch(console.error);
+  for (const guild of client.guilds.cache.values()) {
+    await rest
+      .put(Routes.applicationGuildCommands(clientId, guild.id), {
+        body: commands,
+      })
+      .catch(console.error);
+  }
 
   client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
