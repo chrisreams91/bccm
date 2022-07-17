@@ -17,7 +17,7 @@ const PieChart = (data: PieData[]) => (
     innerRadius={0.5}
     padAngle={1}
     // sortByValue={true}
-    enableArcLabels={false}
+    enableArcLabels={true}
     arcLabelsSkipAngle={11}
     margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
     arcLinkLabelsSkipAngle={2}

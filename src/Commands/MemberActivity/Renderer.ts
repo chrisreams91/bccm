@@ -3,6 +3,7 @@ import { writeFile } from 'fs/promises';
 import sharp from 'sharp';
 import path from 'path';
 
+// converting to PNG so that discord will show a preview
 export const jsxToPNGBuffer = async (element: JSX.Element) => {
   const html = ReactDOMServer.renderToStaticMarkup(element);
   const buf = ReactDOMServer.renderToStaticNodeStream(element);
