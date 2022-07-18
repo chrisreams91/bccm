@@ -34,6 +34,10 @@ const main = async () => {
       for (const channel of channelCache.values()) {
         // doesnt handle thread comments
         if (channel instanceof TextChannel) {
+          console.log(
+            `Fetching messages for ${channel.guild.name} - ${channel.name}`,
+          );
+
           const messages = await fetchAllMessagesFromChannel(channel);
           console.log(`${channel.name} : ${messages.length}`);
 
