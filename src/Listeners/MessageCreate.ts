@@ -6,22 +6,18 @@ import Message from '../Database/Entities/Message.entity';
 
 export const messageCreateEvent = 'messageCreate';
 
-export const messageCreateHandler = async (newMessage: DiscordMessage) => {
-  const { channel } = newMessage;
+export const messageCreateHandler = async (message: DiscordMessage) => {
+  const { channel } = message;
   if (channel instanceof TextChannel) {
     const messageRepo = AppDataSource.getRepository(Message);
 
-    const guild = newMessage.guild;
-    const newUser = new User(newMessage.author, guild);
+    const guild = message.guild;
+    const newUser = new User(message.author, guild);
     const newChannel = new Channel(channel, guild);
+    const newMessage = new Message(message);
 
-    //@ts-ignore
-    await messageRepo.save({
-      ...newMessage,
-      user: newUser,
-      channel: newChannel,
-    });
-
-    console.log('saved new message');
+    newMessage.user = newUser;
+    newMessage.channel = newChannel;
+    await messageRepo.save(newMessage);
   }
 };

@@ -38,26 +38,14 @@ const main = async () => {
           console.log(`${channel.name} : ${messages.length}`);
 
           for (const message of messages) {
-            /*
-             *
-             *  having wierd issues with cascading creation stuff here - channel has to be JSONified or else
-             *  also omitting the messages field since our class has the same name -
-             *  this is causing channelId to not be populated correctly
-             *
-             * "TypeError: relatedEntities.forEach is not a function" error is thrown
-             *  also having type errors hence the ts ignore
-             *
-             */
             const guild = message.guild;
             const newUser = new User(message.author, guild);
             const newChannel = new Channel(channel, guild);
+            const newMessage = new Message(message);
 
-            //@ts-ignore
-            await messageRepo.save({
-              ...message,
-              user: newUser,
-              channel: newChannel,
-            });
+            newMessage.user = newUser;
+            newMessage.channel = newChannel;
+            await messageRepo.save(newMessage);
           }
         }
       }
