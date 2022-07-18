@@ -1,26 +1,38 @@
 import { Column, Entity, PrimaryColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Message as DiscordMessage } from 'discord.js';
 import User from './User.entity';
 import Channel from './Channel.entity';
 
 @Entity({ name: 'messages' })
 class Message {
+  public constructor(message: DiscordMessage) {
+    if (message) {
+      this.id = message.id;
+      this.content = message.content;
+      this.createdTimestamp = message.createdTimestamp.toString();
+      this.type = message.type;
+      this.system = message.system;
+      this.pinned = message.pinned;
+    }
+  }
+
   @PrimaryColumn()
-  public id: string;
+  id: string;
 
   @Column()
-  public content: string;
+  content: string;
 
   @Column()
-  public createdTimestamp: string;
+  createdTimestamp: string;
 
   @Column()
-  public type: string;
+  type: string;
 
   @Column()
-  public system: boolean;
+  system: boolean;
 
   @Column()
-  public pinned: boolean;
+  pinned: boolean;
 
   @ManyToOne(() => User, (user) => user.messages, {
     cascade: ['insert'],

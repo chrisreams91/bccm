@@ -18,7 +18,7 @@ const main = async () => {
       ],
     });
 
-    discordClient.login(token);
+    await discordClient.login(token);
 
     discordClient.once('ready', async () => {
       if (DB) {

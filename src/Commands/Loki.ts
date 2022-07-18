@@ -1,4 +1,4 @@
-import * as path from 'path';
+import path from 'path';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { COMMAND_NAMES } from '../Util/Constants';

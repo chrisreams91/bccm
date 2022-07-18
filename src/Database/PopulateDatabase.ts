@@ -7,6 +7,8 @@ import {
 } from 'discord.js';
 import AppDataSource from './config';
 import Message from './Entities/Message.entity';
+import User from './Entities/User.entity';
+import Channel from './Entities/Channel.entity';
 
 const { token } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
@@ -20,10 +22,11 @@ const main = async () => {
     ],
   });
 
-  discordClient.login(token);
+  await discordClient.login(token);
 
   discordClient.once('ready', async () => {
     await AppDataSource.initialize();
+
     try {
       const channelCache = discordClient.channels.cache;
       const messageRepo = AppDataSource.getRepository(Message);
@@ -31,35 +34,28 @@ const main = async () => {
       for (const channel of channelCache.values()) {
         // doesnt handle thread comments
         if (channel instanceof TextChannel) {
+          console.log(
+            `Fetching messages for ${channel.guild.name} - ${channel.name}`,
+          );
+
           const messages = await fetchAllMessagesFromChannel(channel);
           console.log(`${channel.name} : ${messages.length}`);
 
           for (const message of messages) {
-            /*
-             *
-             *  having wierd issues with cascading creation stuff here - channel has to be JSONified or else
-             *  also omitting the messages field since our class has the same name -
-             *  this is causing channelId to not be populated correctly
-             *
-             * "TypeError: relatedEntities.forEach is not a function" error is thrown
-             *  also having type errors hence the ts ignore
-             *
-             */
+            const guild = message.guild;
+            const newUser = new User(message.author, guild);
+            const newChannel = new Channel(channel, guild);
+            const newMessage = new Message(message);
 
-            //@ts-ignore
-            const { messages, ...cleanedChannel } = channel.toJSON();
-
-            //@ts-ignore
-            await messageRepo.save({
-              ...message,
-              user: message.author,
-              channel: cleanedChannel,
-            });
+            newMessage.user = newUser;
+            newMessage.channel = newChannel;
+            await messageRepo.save(newMessage);
           }
         }
       }
 
-      console.log('finished');
+      console.log('Finished populating Database.');
+      process.exit(0);
     } catch (error) {
       console.log(error);
       process.exit(1);

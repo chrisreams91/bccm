@@ -1,38 +1,61 @@
 import { Column, Entity, OneToMany, PrimaryColumn, JoinColumn } from 'typeorm';
+import { Guild, User as DiscordUser } from 'discord.js';
 import Message from './Message.entity';
 
 @Entity({ name: 'users' })
 class User {
+  public constructor(user: DiscordUser, guild: Guild) {
+    if (user && guild) {
+      this.id = user.id + guild.id;
+      this.userId = user.id;
+      this.username = user.username;
+      this.guildId = guild.id;
+      this.guildName = guild.name;
+      this.createdTimestamp = user.createdTimestamp.toString();
+      this.bot = user.bot;
+      this.system = user.system;
+      this.avatarURL = user.avatarURL();
+      this.defaultAvatarURL = user.defaultAvatarURL;
+      this.discriminator = user.discriminator;
+      this.banner = user.banner;
+      this.accentColor = user.accentColor?.toString();
+    }
+  }
+
   @PrimaryColumn()
-  public id: string;
+  id: string;
 
   @Column()
-  public username: string;
+  userId: string;
 
   @Column()
-  public createdTimestamp: string;
+  username: string;
 
   @Column()
-  public bot: boolean;
+  guildId: string;
 
   @Column()
-  public system: boolean;
+  guildName: string;
+
+  @Column()
+  createdTimestamp: string;
+
+  @Column()
+  bot: boolean;
+
+  @Column()
+  system: boolean;
 
   @Column({
     nullable: true,
   })
-  public avatar?: string;
+  avatarURL?: string;
 
   @Column()
   defaultAvatarURL: string;
 
   @Column()
-  public discriminator: string;
-
-  @Column({
-    nullable: true,
-  })
-  public email?: string;
+  discriminator: string;
 
   @Column({
     nullable: true,
@@ -47,10 +70,6 @@ class User {
   @OneToMany(() => Message, (message) => message.user, { eager: true })
   @JoinColumn()
   messages: Message[];
-
-  getAvatarURL() {
-    return `https://cdn.discordapp.com/avatars/${this.id}/${this.avatar}`;
-  }
 }
 
 export default User;
