@@ -1,19 +1,20 @@
 import * as ReactDOMServer from 'react-dom/server';
-import { writeFile } from 'fs/promises';
+import { writeFile, unlink } from 'fs/promises';
 import sharp from 'sharp';
 import path from 'path';
 
 // converting to PNG so that discord will show a preview
 export const jsxToPNGBuffer = async (element: JSX.Element) => {
   const html = ReactDOMServer.renderToStaticMarkup(element);
+  const ultraHack = html.substring(31, html.length - 6);
+
+  const tempFileName = `${Date.now()}.svg`;
+  const fullPath = path.join(__dirname, `../../../${tempFileName}`);
 
   // remove wrapping div
-  const ultraHack = html.substring(31, html.length - 6);
-  await writeFile('test.svg', ultraHack);
-
-  const buffer = sharp(path.join(__dirname, '../../../test.svg'))
-    .png()
-    .toBuffer();
+  await writeFile(`${tempFileName}`, ultraHack);
+  const buffer = await sharp(fullPath).png().toBuffer();
+  await unlink(fullPath);
 
   return buffer;
 };
