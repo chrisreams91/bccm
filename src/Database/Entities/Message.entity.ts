@@ -5,22 +5,22 @@ import Channel from './Channel.entity';
 @Entity({ name: 'messages' })
 class Message {
   @PrimaryColumn()
-  public id: string;
+  id: string;
 
   @Column()
-  public content: string;
+  content: string;
 
   @Column()
-  public createdTimestamp: string;
+  createdTimestamp: string;
 
   @Column()
-  public type: string;
+  type: string;
 
   @Column()
-  public system: boolean;
+  system: boolean;
 
   @Column()
-  public pinned: boolean;
+  pinned: boolean;
 
   @ManyToOne(() => User, (user) => user.messages, {
     cascade: ['insert'],

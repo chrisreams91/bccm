@@ -20,18 +20,20 @@ export const dayToReadableMap = {
 
 export const handler = async (interaction: CommandInteraction) => {
   const range = interaction.options.getInteger('range') || 30;
-  const messageRepo = AppDataSource.getRepository(User);
-  const allUsers = await messageRepo.find();
+  const userRepo = AppDataSource.getRepository(User);
+  const allUsersForGuild = await userRepo.find({
+    where: { guildId: interaction.guildId },
+  });
 
   let attachment: MessageAttachment;
   if (range === 1) {
-    const pieData = formatPieData(allUsers);
+    const pieData = formatPieData(allUsersForGuild);
     const pie = PieChart(pieData);
 
     const buf = await jsxToPNGBuffer(pie);
     attachment = new MessageAttachment(buf);
   } else {
-    const lineData = formatLineData(allUsers, range);
+    const lineData = formatLineData(allUsersForGuild, range);
     const lineChart = LineChart(lineData, dayToReadableMap[range]);
 
     const buf = await jsxToPNGBuffer(lineChart);

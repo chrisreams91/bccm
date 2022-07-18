@@ -7,6 +7,8 @@ import {
 } from 'discord.js';
 import AppDataSource from './config';
 import Message from './Entities/Message.entity';
+import User from './Entities/User.entity';
+import Channel from './Entities/Channel.entity';
 
 const { token } = process.env.ENV === 'PROD' ? secrets.prod : secrets.local;
 
@@ -20,10 +22,11 @@ const main = async () => {
     ],
   });
 
-  discordClient.login(token);
+  await discordClient.login(token);
 
   discordClient.once('ready', async () => {
     await AppDataSource.initialize();
+
     try {
       const channelCache = discordClient.channels.cache;
       const messageRepo = AppDataSource.getRepository(Message);
@@ -45,21 +48,22 @@ const main = async () => {
              *  also having type errors hence the ts ignore
              *
              */
-
-            //@ts-ignore
-            const { messages, ...cleanedChannel } = channel.toJSON();
+            const guild = message.guild;
+            const newUser = new User(message.author, guild);
+            const newChannel = new Channel(channel, guild);
 
             //@ts-ignore
             await messageRepo.save({
               ...message,
-              user: message.author,
-              channel: cleanedChannel,
+              user: newUser,
+              channel: newChannel,
             });
           }
         }
       }
 
-      console.log('finished');
+      console.log('Finished populating Database.');
+      process.exit(0);
     } catch (error) {
       console.log(error);
       process.exit(1);
