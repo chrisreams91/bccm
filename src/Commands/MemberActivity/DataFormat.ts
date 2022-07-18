@@ -3,12 +3,15 @@ import { LineChartData } from './LineChart';
 import { PieData } from './PieChart';
 import { DAY } from '../../Util/Constants';
 
-export const formatPieData = (data: User[]): PieData[] =>
-  data.map((user) => ({
+export const formatPieData = (data: User[]): PieData[] => {
+  const topTwenty = data.slice(0, 20);
+  console.log(topTwenty.map((user) => user.username));
+  return topTwenty.map((user) => ({
     id: user.username,
     label: user.username,
     value: user.messages.length,
   }));
+};
 
 export const formatLineData = (
   data: User[],
@@ -16,7 +19,9 @@ export const formatLineData = (
 ): LineChartData[] => {
   const incrementSizeTimestamp = (range / 10) * DAY;
   const dateRanges = formatDateRange(incrementSizeTimestamp);
-  const sortedByMostMessaegs = data.sort(
+
+  const topTwenty = data.slice(0, 20);
+  const sortedByMostMessaegs = topTwenty.sort(
     (a, b) => a.messages.length - b.messages.length,
   );
 
