@@ -5,7 +5,6 @@ import { DAY } from '../../Util/Constants';
 
 export const formatPieData = (data: User[]): PieData[] => {
   const topTwenty = data.slice(0, 20);
-  console.log(topTwenty.map((user) => user.username));
   return topTwenty.map((user) => ({
     id: user.username,
     label: user.username,
